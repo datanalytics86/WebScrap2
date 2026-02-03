@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard de Web Scraping</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="header">
+    <h1>Dashboard de Productos</h1>
+    <button id="runScrapeBtn">Ejecutar Scraping Ahora</button>
+  </header>
+
+  <section class="stats">
+    <div class="stat-card">
+      <h3>Total productos</h3>
+      <p id="totalProducts">0</p>
+    </div>
+    <div class="stat-card">
+      <h3>Última ejecución</h3>
+      <p id="lastRun">-</p>
+    </div>
+    <div class="stat-card">
+      <h3>Descuento &gt; 20%</h3>
+      <p id="discountOver20">0</p>
+    </div>
+    <div class="stat-card">
+      <h3>Sitios activos</h3>
+      <p id="activeWebsites">0</p>
+    </div>
+  </section>
+
+  <section class="filters">
+    <select id="websiteFilter">
+      <option value="">Todos los sitios</option>
+    </select>
+    <input type="text" id="searchInput" placeholder="Buscar producto" />
+    <select id="sortFilter">
+      <option value="price">Ordenar por precio</option>
+      <option value="discount">Ordenar por descuento</option>
+      <option value="date">Ordenar por fecha</option>
+    </select>
+  </section>
+
+  <section class="content">
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Sitio</th>
+            <th>Precio</th>
+            <th>Precio original</th>
+            <th>Descuento</th>
+            <th>Último scrape</th>
+          </tr>
+        </thead>
+        <tbody id="productsTable"></tbody>
+      </table>
+    </div>
+
+    <div class="chart-container">
+      <canvas id="priceChart"></canvas>
+    </div>
+  </section>
+
+  <section class="logs">
+    <h2>Logs en tiempo real</h2>
+    <ul id="logsList"></ul>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
