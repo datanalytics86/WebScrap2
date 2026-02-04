@@ -4,7 +4,7 @@ from __future__ import annotations
 import io
 from typing import List, Dict, Any
 
-import pandas as pd
+from openpyxl import Workbook
 import streamlit as st
 from bs4 import BeautifulSoup
 import requests
@@ -79,12 +79,17 @@ if st.button("Ejecutar scraping a demanda"):
             if not data:
                 st.warning("No se encontraron productos.")
             else:
-                df = pd.DataFrame(data)
-                st.success(f"Productos encontrados: {len(df)}")
-                st.dataframe(df, use_container_width=True)
+                st.success(f"Productos encontrados: {len(data)}")
+                st.dataframe(data, use_container_width=True)
 
                 output = io.BytesIO()
-                df.to_excel(output, index=False)
+                workbook = Workbook()
+                sheet = workbook.active
+                headers = list(data[0].keys())
+                sheet.append(headers)
+                for row in data:
+                    sheet.append([row.get(header) for header in headers])
+                workbook.save(output)
                 st.download_button(
                     label="Descargar Excel (.xlsx)",
                     data=output.getvalue(),
