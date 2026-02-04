@@ -17,6 +17,10 @@ st.markdown(
     "Ingresa una URL y ejecuta el scraping **a demanda**. "
     "Si el sitio no es conocido, agrega selectores CSS para nombre y precio."
 )
+st.caption(
+    "Para sitios genéricos debes completar selectores CSS de nombre y precio "
+    "(puedes dejar enlace vacío si no aplica)."
+)
 
 url = st.text_input("URL del sitio", "https://listado.mercadolibre.cl/notebook")
 name_selector = st.text_input("Selector CSS para nombre", "h2.ui-search-item__title")
