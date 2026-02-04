@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class WebsiteBase(BaseModel):
@@ -20,8 +20,7 @@ class WebsiteOut(WebsiteBase):
     id: int
     created_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ProductBase(BaseModel):
@@ -38,8 +37,7 @@ class ProductOut(ProductBase):
     id: int
     created_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PriceHistoryOut(BaseModel):
@@ -48,8 +46,7 @@ class PriceHistoryOut(BaseModel):
     price: float
     scraped_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ScrapingLogOut(BaseModel):
@@ -62,8 +59,7 @@ class ScrapingLogOut(BaseModel):
     started_at: datetime
     finished_at: Optional[datetime]
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class StatsOut(BaseModel):
