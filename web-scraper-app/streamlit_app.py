@@ -2,22 +2,12 @@
 from __future__ import annotations
 
 import io
-import sys
-from pathlib import Path
 from typing import List, Dict, Any
 
 import pandas as pd
 import streamlit as st
 from bs4 import BeautifulSoup
 import requests
-
-CURRENT_DIR = Path(__file__).resolve().parent
-BACKEND_PATH = (CURRENT_DIR / "backend").resolve()
-if str(BACKEND_PATH) not in sys.path:
-    sys.path.append(str(BACKEND_PATH))
-
-from app.scrapers.mercadolibre_scraper import MercadoLibreScraper
-from app.scrapers.falabella_scraper import FalabellaScraper
 
 
 st.set_page_config(page_title="Web Scraper Streamlit", layout="wide")
@@ -29,24 +19,38 @@ st.markdown(
 )
 
 url = st.text_input("URL del sitio", "https://listado.mercadolibre.cl/notebook")
-name_selector = st.text_input("Selector CSS para nombre (opcional)", "")
-price_selector = st.text_input("Selector CSS para precio (opcional)", "")
+name_selector = st.text_input("Selector CSS para nombre", "h2.ui-search-item__title")
+price_selector = st.text_input("Selector CSS para precio", "span.andes-money-amount__fraction")
+link_selector = st.text_input("Selector CSS para enlace (opcional)", "a.ui-search-item__group__element")
+limit = st.number_input("Máximo de productos", min_value=1, max_value=200, value=50)
 
 
-def generic_scrape(target_url: str, name_css: str, price_css: str) -> List[Dict[str, Any]]:
+def generic_scrape(
+    target_url: str, name_css: str, price_css: str, link_css: str, max_items: int
+) -> List[Dict[str, Any]]:
     """Scraping genérico basado en selectores CSS."""
     if not name_css or not price_css:
         raise ValueError("Debes definir selectores CSS para nombre y precio en sitios genéricos.")
 
-    response = requests.get(target_url, timeout=20)
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/120.0.0.0 Safari/537.36"
+        )
+    }
+    response = requests.get(target_url, headers=headers, timeout=20)
     response.raise_for_status()
     soup = BeautifulSoup(response.text, "html.parser")
 
     names = [node.get_text(strip=True) for node in soup.select(name_css)]
     prices_raw = [node.get_text(strip=True) for node in soup.select(price_css)]
+    links = [node.get("href") for node in soup.select(link_css)] if link_css else []
 
     results: List[Dict[str, Any]] = []
-    for name, price in zip(names, prices_raw):
+    for idx, (name, price) in enumerate(zip(names, prices_raw)):
+        if idx >= max_items:
+            break
         cleaned = (
             price.replace("$", "")
             .replace(".", "")
@@ -57,7 +61,8 @@ def generic_scrape(target_url: str, name_css: str, price_css: str) -> List[Dict[
             price_value = float(cleaned)
         except ValueError:
             price_value = None
-        results.append({"name": name, "price": price_value})
+        link_value = links[idx] if idx < len(links) else None
+        results.append({"name": name, "price": price_value, "url": link_value})
 
     return results
 
@@ -65,13 +70,7 @@ def generic_scrape(target_url: str, name_css: str, price_css: str) -> List[Dict[
 if st.button("Ejecutar scraping a demanda"):
     with st.spinner("Scrapeando datos..."):
         try:
-            data: List[Dict[str, Any]]
-            if "mercadolibre" in url:
-                data = MercadoLibreScraper(url).scrape()
-            elif "falabella" in url:
-                data = FalabellaScraper(url).scrape()
-            else:
-                data = generic_scrape(url, name_selector, price_selector)
+            data = generic_scrape(url, name_selector, price_selector, link_selector, limit)
 
             if not data:
                 st.warning("No se encontraron productos.")

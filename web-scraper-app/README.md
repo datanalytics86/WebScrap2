@@ -48,7 +48,7 @@ Visita `http://localhost:8080` en el navegador.
 streamlit run streamlit_app.py
 ```
 
-- Ingresa una URL válida (MercadoLibre/Falabella o un sitio con selectores CSS).
+- Ingresa una URL válida y los selectores CSS para **nombre** y **precio**.
 - El scraping se ejecuta **solo cuando presionas el botón** (no hay scraping automático).
 - Descarga el Excel desde el botón de exportación (.xlsx).
 
@@ -61,6 +61,7 @@ Al crear la app en Streamlit Cloud usa:
 - **Main file path**: `web-scraper-app/streamlit_app.py`
 
 > Nota: Streamlit Cloud instala dependencias desde `requirements.txt` en la raíz del repo.
+> Para acelerar el deploy, ese archivo contiene solo las librerías mínimas de Streamlit.
 
 ## Endpoints principales
 
