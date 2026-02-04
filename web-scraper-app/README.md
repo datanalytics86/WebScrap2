@@ -57,7 +57,7 @@ streamlit run streamlit_app.py
 Al crear la app en Streamlit Cloud usa:
 
 - **Repository**: `https://github.com/<tu-usuario>/<tu-repo>`
-- **Branch**: `master`
+- **Branch**: `main`
 - **Main file path**: `web-scraper-app/streamlit_app.py`
 
 > Nota: Streamlit Cloud instala dependencias desde `requirements.txt` en la raíz del repo.
