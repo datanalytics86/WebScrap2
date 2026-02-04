@@ -1,3 +1,8 @@
+
+---
+
+# ✅ PASO 3 — `web-scraper-app/backend/app/schemas.py`
+```python
 """Esquemas Pydantic para la API."""
 from __future__ import annotations
 
